@@ -1,0 +1,37 @@
+{% macro  show_links()  %}
+
+<ul class="nav nav-tabs nav-fill" style="background-color:rgb(0, 75, 93);">
+    <li class="nav-item">
+      <a class="nav-link" style="color:whitesmoke;" href="{{url_for('index')}}">Home</a>
+    </li>
+
+    {% if session.user %}
+    <li class="nav-item">
+      <a class="nav-link"   style="color:whitesmoke;" href="{{url_for('logout')}}">LogOut</a>
+    </li>
+    {% else %}
+    <li class="nav-item">
+      <a class="nav-link" style="color:whitesmoke;" href="{{url_for('login')}}">LogIn</a>
+    </li>
+  {% endif %}
+
+      <li class="nav-item">
+        <a class="nav-link" style="color:whitesmoke;" href="{{url_for('register')}}">Register</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" style="color:whitesmoke;" href="{{url_for('dashboard')}}">Dashboard</a>
+      </li>
+</ul>
+{% endmacro %}
+
+
+  {% macro showsocialmedialinks() %}
+  <ul class="nav justify-content-center">
+    <li class="nav-item">
+      <a class="nav-link"  style="color:rgb(0, 75, 93);"  href="#">Final Project</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link"  style="color:rgb(0, 75, 93);" href="#">Cloud Computing</a>
+    </li>
+  </ul>
+  {% endmacro %}
