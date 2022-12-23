@@ -9,7 +9,5 @@ class User:
     def toDBCollectionUser(self):
         return{
             'name': self.name,
-            'password': self.password,
-            'admin': self.admin
-        
+            'password': self.password,      
         }
