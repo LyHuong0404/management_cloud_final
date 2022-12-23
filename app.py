@@ -1,8 +1,6 @@
 from werkzeug.utils import redirect
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
-
-
 from flask import Flask, render_template, request, Response, jsonify, redirect, url_for, session
 import database as dbase  
 from User import User
@@ -13,14 +11,6 @@ db = dbase.dbConnection()
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
 
-
-# def get_current_user():
-#     user = None
-#     if 'user' in session:
-#         user = session['user']
-#         user = db['users']
-#         userReceived = user.find()
-#     return user
 
 
 @app.route('/')
