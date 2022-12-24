@@ -1,38 +1,249 @@
-kind: Deployment
-apiVersion: apps/v1
-metadata:
-  name: my-python
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: python-app
-  template:
-    metadata:
-      labels:
-        app: python-app
-    spec:
-      containers:
-        - name: my-python
-          image: python-image:latest
-          ports:
-            - name: http
-              containerPort: 8081
-              protocol: TCP
-          resources:
-            limits:
-              memory: "128Mi"
-              cpu: "500m"
----
-kind: Service
+kind: Pod
 apiVersion: v1
 metadata:
-  name: my-python
+  name: example
+  namespace: cloudcomputingflaskpython-dev
+  uid: 93e815ff-e7c0-46c2-9abd-ec7f0e28f91b
+  resourceVersion: '2055445502'
+  creationTimestamp: '2022-12-24T09:00:54Z'
+  labels:
+    app: httpd
+  annotations:
+    k8s.v1.cni.cncf.io/network-status: |-
+      [{
+          "name": "openshift-sdn",
+          "interface": "eth0",
+          "ips": [
+              "10.129.2.211"
+          ],
+          "default": true,
+          "dns": {}
+      }]
+    k8s.v1.cni.cncf.io/networks-status: |-
+      [{
+          "name": "openshift-sdn",
+          "interface": "eth0",
+          "ips": [
+              "10.129.2.211"
+          ],
+          "default": true,
+          "dns": {}
+      }]
+    kubernetes.io/limit-ranger: >-
+      LimitRanger plugin set: cpu, memory request for container httpd; cpu,
+      memory limit for container httpd
+    openshift.io/scc: restricted-v2
+    seccomp.security.alpha.kubernetes.io/pod: runtime/default
+  managedFields:
+    - manager: Mozilla
+      operation: Update
+      apiVersion: v1
+      time: '2022-12-24T09:00:54Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
+          'f:labels':
+            .: {}
+            'f:app': {}
+        'f:spec':
+          'f:containers':
+            'k:{"name":"httpd"}':
+              'f:image': {}
+              'f:terminationMessagePolicy': {}
+              .: {}
+              'f:resources': {}
+              'f:securityContext':
+                .: {}
+                'f:allowPrivilegeEscalation': {}
+                'f:capabilities':
+                  .: {}
+                  'f:drop': {}
+              'f:terminationMessagePath': {}
+              'f:imagePullPolicy': {}
+              'f:ports':
+                .: {}
+                'k:{"containerPort":8080,"protocol":"TCP"}':
+                  .: {}
+                  'f:containerPort': {}
+                  'f:protocol': {}
+              'f:name': {}
+          'f:dnsPolicy': {}
+          'f:enableServiceLinks': {}
+          'f:restartPolicy': {}
+          'f:schedulerName': {}
+          'f:securityContext':
+            .: {}
+            'f:runAsNonRoot': {}
+            'f:seccompProfile':
+              .: {}
+              'f:type': {}
+          'f:terminationGracePeriodSeconds': {}
+    - manager: multus
+      operation: Update
+      apiVersion: v1
+      time: '2022-12-24T09:00:56Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
+          'f:annotations':
+            'f:k8s.v1.cni.cncf.io/network-status': {}
+            'f:k8s.v1.cni.cncf.io/networks-status': {}
+      subresource: status
+    - manager: kubelet
+      operation: Update
+      apiVersion: v1
+      time: '2022-12-24T09:00:57Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:status':
+          'f:conditions':
+            'k:{"type":"ContainersReady"}':
+              .: {}
+              'f:lastProbeTime': {}
+              'f:lastTransitionTime': {}
+              'f:status': {}
+              'f:type': {}
+            'k:{"type":"Initialized"}':
+              .: {}
+              'f:lastProbeTime': {}
+              'f:lastTransitionTime': {}
+              'f:status': {}
+              'f:type': {}
+            'k:{"type":"Ready"}':
+              .: {}
+              'f:lastProbeTime': {}
+              'f:lastTransitionTime': {}
+              'f:status': {}
+              'f:type': {}
+          'f:containerStatuses': {}
+          'f:hostIP': {}
+          'f:phase': {}
+          'f:podIP': {}
+          'f:podIPs':
+            .: {}
+            'k:{"ip":"10.129.2.211"}':
+              .: {}
+              'f:ip': {}
+          'f:startTime': {}
+      subresource: status
 spec:
-ports:
-  - name: http-8081
-    port: 8081
-    protocol: TCP
-    targetPort: 8081
-selector:
-  app: python-app
+  restartPolicy: Always
+  serviceAccountName: default
+  imagePullSecrets:
+    - name: default-dockercfg-s7lc2
+  priority: -3
+  schedulerName: default-scheduler
+  enableServiceLinks: true
+  terminationGracePeriodSeconds: 30
+  preemptionPolicy: PreemptLowerPriority
+  nodeName: ip-10-0-202-251.ec2.internal
+  securityContext:
+    seLinuxOptions:
+      level: 's0:c63,c42'
+    runAsNonRoot: true
+    fsGroup: 1003990000
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+    - resources:
+        limits:
+          cpu: '1'
+          memory: 1000Mi
+        requests:
+          cpu: 10m
+          memory: 64Mi
+      terminationMessagePath: /dev/termination-log
+      name: httpd
+      securityContext:
+        capabilities:
+          drop:
+            - ALL
+        runAsUser: 1003990000
+        allowPrivilegeEscalation: false
+      ports:
+        - containerPort: 8080
+          protocol: TCP
+      imagePullPolicy: Always
+      volumeMounts:
+        - name: kube-api-access-swkmw
+          readOnly: true
+          mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      terminationMessagePolicy: File
+      image: 'image-registry.openshift-image-registry.svc:5000/openshift/httpd:latest'
+  serviceAccount: default
+  volumes:
+    - name: kube-api-access-swkmw
+      projected:
+        sources:
+          - serviceAccountToken:
+              expirationSeconds: 3607
+              path: token
+          - configMap:
+              name: kube-root-ca.crt
+              items:
+                - key: ca.crt
+                  path: ca.crt
+          - downwardAPI:
+              items:
+                - path: namespace
+                  fieldRef:
+                    apiVersion: v1
+                    fieldPath: metadata.namespace
+          - configMap:
+              name: openshift-service-ca.crt
+              items:
+                - key: service-ca.crt
+                  path: service-ca.crt
+        defaultMode: 420
+  dnsPolicy: ClusterFirst
+  tolerations:
+    - key: node.kubernetes.io/not-ready
+      operator: Exists
+      effect: NoExecute
+      tolerationSeconds: 300
+    - key: node.kubernetes.io/unreachable
+      operator: Exists
+      effect: NoExecute
+      tolerationSeconds: 300
+    - key: node.kubernetes.io/memory-pressure
+      operator: Exists
+      effect: NoSchedule
+  priorityClassName: sandbox-users-pods
+status:
+  phase: Running
+  conditions:
+    - type: Initialized
+      status: 'True'
+      lastProbeTime: null
+      lastTransitionTime: '2022-12-24T09:00:54Z'
+    - type: Ready
+      status: 'True'
+      lastProbeTime: null
+      lastTransitionTime: '2022-12-24T09:00:57Z'
+    - type: ContainersReady
+      status: 'True'
+      lastProbeTime: null
+      lastTransitionTime: '2022-12-24T09:00:57Z'
+    - type: PodScheduled
+      status: 'True'
+      lastProbeTime: null
+      lastTransitionTime: '2022-12-24T09:00:54Z'
+  hostIP: 10.0.202.251
+  podIP: 10.129.2.211
+  podIPs:
+    - ip: 10.129.2.211
+  startTime: '2022-12-24T09:00:54Z'
+  containerStatuses:
+    - restartCount: 0
+      started: true
+      ready: true
+      name: httpd
+      state:
+        running:
+          startedAt: '2022-12-24T09:00:57Z'
+      imageID: >-
+        image-registry.openshift-image-registry.svc:5000/openshift/httpd@sha256:46f0e1b5d9a115684f790c33a878decdc55025c8267d05a323fdca90e7173d36
+      image: 'image-registry.openshift-image-registry.svc:5000/openshift/httpd:latest'
+      lastState: {}
+      containerID: 'cri-o://c072470144a70ee6f0ddc39e47a03f3189dd8a496a6bd902344cc82221b8be34'
+  qosClass: Burstable
