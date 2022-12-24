@@ -1,15 +1,27 @@
+from bson import ObjectId
 from werkzeug.utils import redirect
-from flask import Flask, render_template, request, redirect, url_for, session
+from werkzeug.security import generate_password_hash, check_password_hash
+import os
+
+
+from flask import Flask, render_template, request, Response, jsonify, redirect, url_for, session
 import database as dbase  
 from User import User
 from Emp import Emp
-import os
 
 db = dbase.dbConnection()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
 
+
+# def get_current_user():
+#     user = None
+#     if 'user' in session:
+#         user = session['user']
+#         user = db['users']
+#         userReceived = user.find()
+#     return user
 
 
 @app.route('/')
@@ -70,15 +82,16 @@ def addnewemployee():
             return redirect(url_for('dashboard'))
     return render_template('addnewemployee.html')
 
-@app.route('/fetchone/<string:phone>')
-def fetchone(phone):
+@app.route('/fetchone/<id>')
+def fetchone(id):
     emp = db['emps']
-    single_emp = emp.find_one({'phone':phone})
+    single_emp = emp.find_one({'_id':ObjectId(id)})
     return render_template('updateemployee.html', single_emp = single_emp)
 
 @app.route('/updateemployee' , methods = ["POST", "GET"])
 def updateemployee():
     if request.method == 'POST':
+        id = request.form['id']
         name = request.form['name']
         email = request.form['email']
         phone = request.form['phone']
@@ -86,23 +99,23 @@ def updateemployee():
 
         if name and email and phone and address:
             emp = db['emps']
-            emp.update_one({'phone':phone},{'$set': {'name': name, 'email': email, 'phone': phone, 'address': address}} )
+            emp.update_one({'_id':ObjectId(id)},{'$set': {'name': name, 'email': email, 'phone': phone, 'address': address}} )
             return redirect(url_for('dashboard'))
     return render_template('updateemployee.html')
 
-@app.route('/deleteemp/<string:phone>', methods = ["GET", "POST"])
-def deleteemp(phone):
+@app.route('/deleteemp/<id>', methods = ["GET", "POST"])
+def deleteemp(id):
     if request.method == 'GET':
         emp = db['emps']
-        emp.delete_one({'phone':phone})
+        emp.delete_one({'_id':ObjectId(id)})
         return redirect(url_for('dashboard'))
     return render_template('dashboard.html')
 
 
-@app.route('/singleemployee/<string:phone>')
-def singleemployee(phone):
+@app.route('/singleemployee/<id>')
+def singleemployee(id):
     emp = db['emps']
-    single_emp = emp.find_one({'phone':phone})
+    single_emp = emp.find_one({'_id':ObjectId(id)})
     return render_template('singleemployee.html', single_emp = single_emp)
 
 @app.route('/searchemployee', methods = ["POST", "GET"])

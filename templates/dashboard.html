@@ -66,9 +66,9 @@
                           <td>{{ emp.email}}</td>
                           <td>{{ emp.phone}}</td>
                           <td>{{ emp.address}}</td>
-                          <td><a class="btn btn-sm" style="background-color:rgb(0, 75, 93); color:whitesmoke;" href="{{ url_for('fetchone', phone = emp.phone )}}">Update</a></td>
-                          <td><a class="btn btn-sm" style="background-color:rgb(0, 75, 93); color:whitesmoke;" href="{{ url_for('deleteemp', phone = emp.phone )}}">Delete</a></td>
-                          <td><a class="btn btn-sm" style="background-color:rgb(0, 75, 93); color:whitesmoke;" href="{{ url_for('singleemployee', phone = emp.phone )}}">View Full Profile</a></td>
+                          <td><a class="btn btn-sm" style="background-color:rgb(0, 75, 93); color:whitesmoke;" href="{{ url_for('fetchone', id = emp._id )}}">Update</a></td>
+                          <td><a class="btn btn-sm" style="background-color:rgb(0, 75, 93); color:whitesmoke;" href="{{ url_for('deleteemp', id = emp._id)}}">Delete</a></td>
+                          <td><a class="btn btn-sm" style="background-color:rgb(0, 75, 93); color:whitesmoke;" href="{{ url_for('singleemployee', id = emp._id )}}">View Full Profile</a></td>
                         </tr>
                         {% endfor %}
                         <tr>

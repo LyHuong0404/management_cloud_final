@@ -54,7 +54,7 @@
                 <form class="p-3" action="/updateemployee" method="POST">
                   <div class="mb-2">
                     <label for="empid" class="form-label">EMP ID</label>
-                    <input type="text" class="form-control" id="empid" value = "{{single_emp._id}}" name="empid" readonly>
+                    <input type="text" class="form-control" id="empid" value = "{{single_emp._id}}" name="id" readonly>
                   </div>
                     <div class="mb-2">
                       <label for="name" class="form-label">Name</label>
@@ -66,7 +66,7 @@
                     </div>
                     <div class="mb-2">
                         <label for="name" class="form-label">Phone</label>
-                        <input type="text" class="form-control" id="phone" value="{{single_emp.phone}}" name="phone" readonly>
+                        <input type="text" class="form-control" id="phone" value="{{single_emp.phone}}" name="phone" >
                       </div>
                       <div class="mb-2">
                         <label for="email" class="form-label">Address</label>
